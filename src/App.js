@@ -10,6 +10,7 @@ class BooksApp extends React.Component {
     wantToRead: [],
     read: [],
     none: [], // temporarily stores removed books
+    searchBooks: [],
     titles: new Set()
   }
   componentDidMount() {
@@ -59,14 +60,35 @@ class BooksApp extends React.Component {
       BooksAPI.update(book, newShelf);
     }
   }
+  getSearchBooksResults = (query) => {
+    BooksAPI.search(query)
+      .then((results) => {
+        if (!results.hasOwnProperty('error')) {
+          // When empty search results a JSON object with an error property is returned 
+          results.forEach(book => {
+            if (this.isBookOnMainPage(book.title)) {
+              book.shelf = this.getBookShelfInfo(book.title)
+            }
+            else {
+              book.shelf = 'none'
+            }
+          })
+        }
+        this.setState((prevState) => ({
+          searchBooks: results[0] !== undefined 
+            ? results 
+            : []
+        }))
+      })
+  }
   render() {
     return (
       <div className="app">
         <Route path="/search" render={() => (
             <SearchBooks 
-              getBookShelfInfo={this.getBookShelfInfo}
-              isBookOnMainPage={this.isBookOnMainPage}
+              getSearchBooksResults={this.getSearchBooksResults}
               onChangeBookShelf={this.changeBookShelf}
+              books={this.state.searchBooks}
             />
           )} />
         <Route exact path="/" render={() => (

@@ -26,7 +26,6 @@ class BookCarousel extends Component {
     return (
       <div className="bookshelf-books">
         <ol className="books-grid">
-          {console.log(books)}
           {books.map((book) => (
             <li key={
               book.hasOwnProperty('industryIdentifier') 

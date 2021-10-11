@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import * as BooksAPI from './BooksAPI';
 import Bookshelf from './Bookshelf';
 import './App.css';
 
@@ -14,34 +13,12 @@ import './App.css';
 
 export default class SearchBooks extends Component {
   state = {
-    value: '',
-    books: []
+    value: ''
   }
   static propTypes = {
     onChangeBookShelf: PropTypes.func.isRequired,
-    isBookOnMainPage: PropTypes.func.isRequired,
-    getBookShelfInfo: PropTypes.func.isRequired
-  }
-  searchBooks = (query) => {
-    BooksAPI.search(query)
-      .then((results) => {
-        if (!results.hasOwnProperty('error')) {
-          // When empty search results a JSON object with an error property is returned 
-          results.forEach(book => {
-            if (this.props.isBookOnMainPage(book.title)) {
-              book.shelf = this.props.getBookShelfInfo(book.title)
-            }
-            else {
-              book.shelf = 'none'
-            }
-          })
-        }
-        this.setState((prevState) => ({
-          books: results[0] !== undefined 
-            ? results 
-            : []
-        }))
-      })
+    getSearchBooksResults: PropTypes.func.isRequired,
+    books: PropTypes.array.isRequired,
   }
   handleChange = (event) => {
     const val = event.target.value;
@@ -49,7 +26,7 @@ export default class SearchBooks extends Component {
       value: val
     }))
     if (val !== '') {
-      this.searchBooks(val);
+      this.props.getSearchBooksResults(val)
     }
   }
   render() {
@@ -68,11 +45,11 @@ export default class SearchBooks extends Component {
             ></input>
           </div>
         </div>
-        {(this.state.books.length > 0 && this.state.value !== '') &&
+        {(this.props.books.length > 0 && this.state.value !== '') &&
           <Bookshelf 
             onChangeBookShelf={this.props.onChangeBookShelf}
             shelfName={''}
-            books={this.state.books}
+            books={this.props.books}
           />
         }
       </div>
