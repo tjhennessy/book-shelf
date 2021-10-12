@@ -25,7 +25,7 @@ function Book(props) {
       <div className="book-title">{title}</div>
       <div className="book-authors">
         {authors !== undefined && 
-          authors.map((author) => (<p key={author} style={{margin: 0}}>{author}</p>))
+          authors.join('\r\n')
         }
       </div>
     </div>
