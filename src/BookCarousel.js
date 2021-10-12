@@ -27,10 +27,7 @@ class BookCarousel extends Component {
       <div className="bookshelf-books">
         <ol className="books-grid">
           {books.map((book) => (
-            <li key={
-              book.hasOwnProperty('industryIdentifier') 
-                ? book.industryIdentifiers[0].identifier
-                : book.title}>
+            <li key={book.id}>
               <Book 
                 handleChangeBookShelf={this.handleChangeBookShelf}
                 currentShelf={book.shelf}
